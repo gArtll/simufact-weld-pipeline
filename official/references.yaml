@@ -1,0 +1,89 @@
+# Official Simufact Welding references (2024.2 installation: <install>/examples, <install>/doc).
+#
+# What each one is used for in this repository is the METHOD it demonstrates. Its dimensions, tooling positions,
+# forces, release times and heat source numbers belong to its own part and are never copied into another case;
+# a value taken from here is recorded with source `simufact_official_example` and a note of what was taken.
+
+references:
+  arc_welding_singlefillet:
+    path: examples/arc_welding/Singlefillet
+    joint: t_joint single-sided single-layer fillet, steel plates
+    methods:
+      - "heat source calibrated in a separate 'Calibration' process before the welding process"
+      - "standing part positioned by fixings released after welding; base part by clampings + bearings"
+      - "all tooling removed after cooling except a few fixed nodes, so the final distortion can be read"
+      - "fillet and heat source created in the software"
+
+  arc_welding_webonplate:
+    path: examples/arc_welding/WebOnPlate
+    joint: t_joint two-sided fillets, 2 robots, 4 seams, aluminium
+    methods:
+      - "fixings, clampings and a bearing; fixings and clamps released during the simulation"
+      - "calibrated heat sources; melt pool checked in the welding monitor"
+
+  scripting_webonplate_from_scratch:
+    path: examples/scripting/WebOnPlate/WebOnPlateFromScratch.py
+    joint: t_joint two-sided fillets (scripted build of arc_welding_webonplate)
+    methods:
+      - "components, tooling, weld lines, beads and heat source created by script"
+      - "tooling as geometry: new_bearing / new_fixed_geometry(end_time) / new_clamping(end_time, force)"
+      - "no user-defined contact table: contact is left to the process default"
+      - "process parameters imported with process_parameters.import_all_settings(xml)"
+
+  arc_welding_3robots:
+    path: examples/arc_welding/3Robots
+    joint: two webs on a plate, 12 fillets, 3 robots
+    methods:
+      - "fixings of the webs released first, plate fixings later"
+      - "a fixed-node boundary condition holds the assembly after all fixings are released"
+
+  tutorial_arcwelding_tube_on_plate:
+    path: examples/Tutorial/ArcWelding
+    joint: tube on plate, circumferential fillet
+    methods: ["one bearing, two clampings; fully coupled"]
+
+  arc_welding_tubet_joint:
+    path: examples/arc_welding/TubeT-Joint
+    joint: tube-tube T joint, fish-mouth fillets, aluminium
+    methods: ["fillet picked from the abutting edge", "clamping presses the tubes together, released after welding"]
+
+  arc_welding_multilayer:
+    path: examples/arc_welding/Multilayer
+    joint: butt with groove, two filler passes
+    methods: ["multi-pass: one filler body per pass", "bearings + one fixing kept to the end"]
+
+  laser_beam_welding_laserwelding:
+    path: examples/laser_beam_welding/Laserwelding
+    joint: two sheets, laser seam
+    methods: ["side clamps and top clamps released at different times", "bearing under the sheets"]
+
+  tutorial_laserbeamwelding:
+    path: examples/Tutorial/LaserBeamWelding
+    joint: two plates, two tack welds then the final seam
+    methods: ["tack welds as separate trajectories before the main seam"]
+
+  tutorial_electronbeamwelding:
+    path: examples/Tutorial/ElectronBeamWelding
+    joint: two plates, tack welds + edge seam
+    methods: ["multiple trajectories on one robot"]
+
+  brazing_flanged_seam:
+    path: examples/brazing/Flanged-seam
+    joint: flanged seam, straight + curved sheet
+    methods: ["heat input to the filler only"]
+
+  resistance_spot_welding_2_sheets:
+    path: examples/resistance_spot_welding/RSW-2-Sheets
+    joint: lap, spot welds
+    methods: ["two fixings kept to the end"]
+
+documentation:
+  clamping: doc/InfoSheets/BoundaryConditionsClamping_en.pdf
+  bearing: doc/InfoSheets/BoundaryConditionsBearing_en.pdf
+  fixing: doc/InfoSheets/BoundaryConditionsFixing_en.pdf
+  local_joints: doc/InfoSheets/BoundaryConditionsLocalJoints_en.pdf
+  contact_table: doc/InfoSheets/ContactTable_en.pdf
+  parallelisation: doc/InfoSheets/DDMSharedMemoryParallelisation_en.pdf
+  step_size: doc/InfoSheets/AdvancedSettingsStepSize_en.pdf
+  exit_codes: doc/InfoSheets/Exitcodes_en.pdf
+  scripting_api: doc/Scripting/generated

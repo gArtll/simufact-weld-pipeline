@@ -1,0 +1,126 @@
+# Capability matrix: which joint feature combinations the tool can build, and with what.
+#
+# A capability is selected by features of the geometry (capability/classify.py), never by a case name. Each one
+# names the mesh backend, bead strategy and contact strategy it uses, the inputs the user must supply for the
+# actual part (tooling, process), and the official Simufact references whose METHOD it follows. `status` is
+# supported / partial / gap. A combination that matches nothing, or matches a gap, stops the pipeline with the
+# reason -- it is never served by the nearest existing case.
+#
+# Detected is not supported. The classifier recognises more joints than the tool can build; a joint it recognises
+# stays `gap` (detected=true, supported=false in the plan) until its whole chain -- mesh -> prep -> build -> smoke/run --
+# has passed end to end. `supported` and `partial` must name that evidence (`evidence.ci_tests`: tests in tests/ that
+# run the chain without commercial software, `evidence.ci_workflow_steps`: step names of .github/workflows/ci.yml;
+# `evidence.solver_runs`: documented solver runs). tests/test_contact_frame.py
+# refuses a supported capability without it.
+#
+# Contact. `contact.default` is what a new project gets when nothing more specific is known; it is a fallback, not a
+# rule for every weld. Every other strategy is an explicit capability in `contact.explicit`: it is used only when the
+# case declares it and its provenance is one of `requires_source` (an official reference, the user, or the part's own
+# process document). It is never switched on by the tool to make a run converge. Regression cases keep the contact
+# rule set they were solved with (common/contact.py).
+
+dimensions:
+  joint: [t_joint, butt, lap, corner, edge, tube_on_plate, tube_t_joint]
+  standing_kind: [plate, curved_plate, tube, profile, solid]
+  base_kind: [plate, curved_plate, tube, profile, solid]
+  standing_surface: [planar, oblique, curved]
+  seam_path: [straight, curved, closed]
+  sides: [single, double]
+  passes: [single, multi]
+  groove: [none, prepared]
+  parts: [two, many]
+
+capabilities:
+  - id: fillet_t_planar_web
+    status: supported
+    when: {joint: t_joint, standing_kind: plate, standing_surface: planar, groove: none, parts: two}
+    mesh_backend: {standing: explicit_web, base: plate_by_section}   # planner.base_backend: sweep / mapped / BLOCK
+    # a backend the chain has not yet been run end to end with makes the joint `unverified` (supported=false):
+    # it can be meshed, prepped and built to get there, but a formal run stays blocked (CAP1)
+    backend_verification:
+      explicit_plate_sweep: {status: verified}
+      mapped_plate: {status: unverified, missing: "build and a smoke run with a mapped_plate base mesh (CI covers
+        STEP -> hm -> prep only)"}
+    bead_strategy: prep_fillet_sections        # prep/weld_prep.py: fillet bead section meshes along the local joint frame
+    contact:
+      default: process_default
+      basis:
+        - "official scripting_webonplate_from_scratch builds a two-sided T joint with no user-defined contact table"
+        - "a user-defined table with glue-on-peak-temperature between web and plate left the web free in the first
+          welding increment of a new T-joint model (exit 3015, then 3020); the process default solved it"
+      explicit:
+        directional_bead_first:
+          ruleset: fillet
+          what: "user table: bead -> component one-way (bead first); web -> plate one-way, glue on peak temperature"
+          evidence: "regression-validated: removed a two-way cross-gluing failure (exit 3015) at a micrometre
+            near-coincidence of bead root and web corner nodes (docs/validation.md, one-way contact)"
+          requires_source: [simufact_official_example, user_confirmed, process_document]
+    evidence:
+      ci_tests: [tests/test_contact_frame.py::TestTJointChain::test_step_to_bead_axis_frames]
+      solver_runs: ["docs/validation.md: full welding + cooling runs of a T joint on a curved plate, exit 3004"]
+    seam_paths: [straight, curved]
+    sides: [single, double]
+    passes: [single]
+    tooling_inputs_required: [clamping_or_fixing_of_standing_part, supports_of_base_part, release_times]
+    process_inputs_required: [weld_sides, weld_sequence, current, voltage, efficiency, weld_speed, heat_source_geometry,
+                              leg_length, base_material, filler_material, cooling_time]
+    official_references: [arc_welding_singlefillet, arc_welding_webonplate, scripting_webonplate_from_scratch,
+                          arc_welding_3robots]
+
+  - id: fillet_tube_on_plate
+    status: partial
+    when: {joint: tube_on_plate, groove: none, parts: two}
+    mesh_backend: {standing: external_bdf, base: external_bdf}
+    bead_strategy: prep_fillet_sections_ring
+    contact:
+      default: process_default
+      basis: ["official Tutorial/ArcWelding tube on plate: no user-defined contact table"]
+      explicit: {}
+    evidence:
+      ci_tests: [tests/test_prep.py::TestBdf::test_tube_on_plate_inputs]
+      ci_workflow_steps: ["prep, synthetic tube on plate", "gate --self, synthetic tube on plate"]
+      solver_runs: ["full welding + cooling runs of the owner's tube-on-plate study, exit 3004 (data not published)"]
+    seam_paths: [closed]
+    sides: [single]
+    passes: [single]
+    tooling_inputs_required: [bearing_of_base_part, clamping, release_times]
+    process_inputs_required: [current, voltage, efficiency, weld_speed, heat_source_geometry, leg_length,
+                              base_material, filler_material, cooling_time]
+    official_references: [tutorial_arcwelding_tube_on_plate]
+    note: "mesh from the user (no CAD mesher for tubes yet)"
+
+  - id: butt_square_plates
+    status: gap
+    when: {joint: butt, groove: none}
+    official_references: [laser_beam_welding_laserwelding, tutorial_laserbeamwelding, tutorial_electronbeamwelding]
+    missing: [butt mesh backend (both plates graded towards the joint line), butt bead/fusion zone strategy]
+
+  - id: butt_groove_multipass
+    status: gap
+    when: {joint: butt, groove: prepared}
+    official_references: [arc_welding_multilayer]
+    missing: [groove-aware mesh backend, multi-pass filler strategy, pass sequence input]
+
+  - id: lap_plates
+    status: gap
+    when: {joint: lap}
+    official_references: [brazing_flanged_seam, resistance_spot_welding_2_sheets]
+    missing: [lap mesh backend, lap fillet bead strategy]
+
+  - id: tube_t_joint
+    status: gap
+    when: {joint: tube_t_joint}
+    official_references: [arc_welding_tubet_joint]
+    missing: [fish-mouth seam extraction, tube mesh backend]
+
+  - id: fillet_t_oblique_or_curved_web
+    status: gap
+    when: {joint: t_joint, standing_surface: [oblique, curved]}
+    official_references: [arc_welding_singlefillet]
+    missing: [explicit_web supports only a planar web face in a coordinate plane]
+
+  - id: multi_part_assembly
+    status: gap
+    when: {parts: many}
+    official_references: [arc_welding_3robots]
+    missing: [joint graph planning over more than one joint, weld sequence]

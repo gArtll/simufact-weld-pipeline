@@ -1,0 +1,169 @@
+{
+  "role": "regression",
+  "case_name": "example_tube_synthetic",
+  "metadata": {
+    "study_id": "example_tube_synthetic",
+    "mesh_strategy": "uniform",
+    "note": "synthetic tube on plate written by cases/example_tube_synthetic/make_example.py; no reference case, gate --self"
+  },
+  "geometry_family": "fillet_tube_on_plate",
+  "output_dir": "../runs/example_tube_synthetic",
+  "base": {
+    "web_bdf": "example_tube_synthetic/inputs/base_tube.bdf",
+    "plate_bdf": "example_tube_synthetic/inputs/base_plate.bdf",
+    "web_name": "tube",
+    "plate_name": "plate",
+    "order": [
+      "plate",
+      "web"
+    ],
+    "roles": {
+      "web": "tube radial wall",
+      "plate": "base plate"
+    },
+    "thickness_rules": {
+      "web": {
+        "mode": "radial",
+        "axis": "z",
+        "center_mm": [
+          100,
+          100,
+          0
+        ]
+      }
+    }
+  },
+  "materials": {
+    "base_xmt": "../materials/Q420D_SW.xmt",
+    "filler_xmt": "../materials/E551T1Ni1C_SW.xmt"
+  },
+  "heat_source": {
+    "xml": "example_tube_synthetic/inputs/HS-SYN-200A24V.xml",
+    "entity_name": "HS-SYN-200A24V"
+  },
+  "temperature": {
+    "name": "20C",
+    "initial_C": 20,
+    "convective_htc": 20,
+    "contact_htc": 1000,
+    "emission": 0.6
+  },
+  "gravity": [
+    0,
+    0,
+    -9.80665
+  ],
+  "weld_edge": {
+    "mode": "closed_circular",
+    "closed": true,
+    "axis": "z",
+    "axis_value_mm": 0.0,
+    "center_mm": [
+      100,
+      100,
+      0
+    ],
+    "radius_mm": 42.5
+  },
+  "bead": {
+    "leg_mm": 4.0,
+    "section_spacing_mm": 2.5,
+    "micro_snap_mm": 0.01,
+    "points": 49,
+    "section_frame": "tube_on_plate"
+  },
+  "sides": [
+    {
+      "label": "ring",
+      "side": "pos",
+      "window_csv": "example_tube_synthetic/inputs/window_ring.csv",
+      "line_source": "root",
+      "trajectory": {
+        "calculation": "Calculate orientation",
+        "orientation_mode": "Component center",
+        "connect_to_nodes": false,
+        "variation_angle_deg": 0,
+        "variation_offset_mm": 0
+      }
+    }
+  ],
+  "window_expected_length_mm": 266.844767259,
+  "process": {
+    "parameters_xml": "example_tube_synthetic/inputs/process_parameters.xml",
+    "weld_speed_mm_s": 4.0,
+    "orientation_search_radius_mm": 5.0
+  },
+  "fixed_nodes_csv": "example_tube_synthetic/inputs/fixed_nodes.csv",
+  "contact_ruleset": "fillet_tube",
+  "gate": {
+    "end_time_s": 120.0,
+    "independent_bead": true,
+    "weld_step_s": 0.1
+  },
+  "run": {
+    "end_time_s": 2.0,
+    "temperature_limit_percent": 5.0
+  },
+  "provenance": {
+    "materials.base_xmt": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "materials.filler_xmt": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "heat_source.xml": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "process.weld_speed_mm_s": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "process.parameters_xml": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "bead.leg_mm": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "bead.section_spacing_mm": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "constraints": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "contact_ruleset": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "temperature": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "gravity": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    },
+    "gate.end_time_s": {
+      "source": "derived",
+      "ref": "cases/example_tube_synthetic/make_example.py",
+      "note": "synthetic regression fixture: values chosen for the test, not a real process"
+    }
+  }
+}

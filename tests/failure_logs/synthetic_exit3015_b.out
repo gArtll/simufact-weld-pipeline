@@ -1,0 +1,33 @@
+# SYNTHETIC fixture written by make_synthetic.py -- not from any solver run. Same line formats as a
+# Simufact/MARC .out: error lines, one instance of each distinct warning text. Warning repeat counts:
+#     904 x      warning - Ignore recycling due to separation.
+#        3 x      warning - Unable to reduce time step below minimum of    1.00000E-02 specified in input.
+#        3 x      warning - Search order is fixed due to glue control.
+#
+
+             *** error - element inside out at element       733 integration point     7
+             *** error - element inside out at element       734 integration point     3
+             *** error - element inside out at element       735 integration point     4
+             *** error - element inside out at element      5120 integration point     3
+             *** error - element inside out at element      5121 integration point     4
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5123 integration point     2
+             *** error - element inside out at element      5124 integration point     3
+             *** error - element inside out at element     14002 integration point     5
+             *** error - element inside out at element     14003 integration point     1
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - element inside out at element      5122 integration point     3
+             *** error - unable to reduce time step below minimum of    1.00000E-02
+
+*** warning - Ignore recycling due to separation.
+*** warning - Unable to reduce time step below minimum of    1.00000E-02 specified in input.
+*** warning - Search order is fixed due to glue control.
+
+             Number of warning messages is 910

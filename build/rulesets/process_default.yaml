@@ -1,0 +1,6 @@
+# Contact left to Simufact: no user-defined contact table is written, the process generates its default contacts
+# for the bodies it holds. This is what the official scripted T-joint build (WebOnPlateFromScratch.py) and the
+# tube-on-plate tutorial use. It is the default of a new project's capability plan where nothing more specific is
+# known (common/contact.py) -- a fallback, not a rule for every weld.
+ruleset: process_default
+mode: process_default

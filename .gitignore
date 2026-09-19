@@ -1,0 +1,75 @@
+# machine config
+config.yaml
+
+# run outputs and self-check outputs
+runs/
+selfcheck_out/
+gate/regression_out/
+gate/work_*/
+
+# private or licensed data
+gate/regression_cases/
+cases/private/
+_migration_sources/
+*.xmt
+*.xmt.bak
+*.dat
+*.swproj
+*.arc
+*.ARC
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# mesh_transition experiment output (regenerate with: python -m mesh_transition.round1)
+mesh_transition/round1_out/
+
+# Data governance: model, solver and project data are ignored by default. Public fixtures are re-included below and
+# must also be registered in tools/public_data_allowlist.yaml; CI (tools/check_private_data.py) refuses any other
+# data file, internal model codes and credentials. Private work lives outside this repository.
+*.stp
+*.step
+*.STEP
+*.igs
+*.iges
+*.stl
+*.x_t
+*.bdf
+*.nas
+*.fem
+*.inp
+*.sts
+*.out
+*.log
+*.jmt
+*.t16
+*.t19
+*.odb
+*.h5
+*.zip
+*.7z
+*.rar
+cases/**/*.xml
+cases/**/*.csv
+cases/**/*.json
+tests/**/*.csv
+*_private/
+private/
+!cases/example_synthetic/inputs/*.bdf
+!cases/example_synthetic/inputs/*.csv
+!cases/example_synthetic/inputs/*.xml
+!cases/example_synthetic.json
+!cases/example_tube_synthetic/inputs/*.bdf
+!cases/example_tube_synthetic/inputs/*.csv
+!cases/example_tube_synthetic/inputs/*.xml
+!cases/example_tube_synthetic.json
+!tests/failure_logs/synthetic_*
+
+# never re-included, whatever the lines above say
+*.arc
+*.ARC
+*.dat
+*.xmt
+*.swproj

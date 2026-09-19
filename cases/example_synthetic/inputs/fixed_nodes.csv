@@ -1,0 +1,4 @@
+name;directions;target;x_mm;y_mm;z_mm
+N1;xyz;plate;-25.0;-6.0;0.0
+N2;xy;plate;25.0;-6.0;0.0
+N3;y;plate;-25.0;-6.0;100.0

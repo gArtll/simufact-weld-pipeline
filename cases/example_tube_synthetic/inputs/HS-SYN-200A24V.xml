@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC test fixture written by cases/synthetic_xml.py: not a Simufact export, values made up -->
+<wlWeldingParameter synthetic="true">
+    <name display_name="HS-SYN-200A24V" internal_name="HS-SYN-200A24V"/>
+    <welding_parameter_data>
+        <velocity dimension="7" unit="1" value="4.0"/>
+        <voltage dimension="20" unit="0" value="24.0"/>
+        <current dimension="2" unit="0" value="200.0"/>
+    </welding_parameter_data>
+</wlWeldingParameter>

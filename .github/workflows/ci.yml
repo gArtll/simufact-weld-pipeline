@@ -1,0 +1,54 @@
+name: tier-1
+
+# The first tier of docs/reproduce.md, on a machine that is not the development machine: a clean checkout, a clean
+# interpreter, no Simufact and no HyperMesh. It proves the public part of the repository stands on its own -- unit
+# tests, regression cases, and the two steps that need no commercial software. It proves nothing about the physics,
+# and nothing about build / run / compare / post, which need a licence and a reference case.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tier1:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # the pushed commits' messages are scanned too
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install numpy scipy pyyaml pytest
+      - name: unit tests
+        run: python -m pytest tests -q
+      - name: regression cases
+        run: python gate/run_regressions.py
+      - name: prep, synthetic case
+        run: python weldsim.py prep cases/example_synthetic.json
+      - name: gate --self, synthetic case
+        run: python weldsim.py gate cases/example_synthetic.json --self
+      - name: prep, synthetic tube on plate
+        run: python weldsim.py prep cases/example_tube_synthetic.json
+      - name: gate --self, synthetic tube on plate
+        run: python weldsim.py gate cases/example_tube_synthetic.json --self
+      - name: no absolute paths in the code
+        run: python tools/check_no_absolute_paths.py
+      - name: no private data, credentials or unregistered data files (tree and pushed commit messages)
+        shell: bash
+        env:
+          # names of unpublished models: kept out of the repository, supplied as a secret (one regex per line)
+          WELDSIM_PRIVATE_DENYLIST_PATTERNS: ${{ secrets.PRIVATE_DENYLIST }}
+        run: |
+          before="${{ github.event.before }}"
+          if [ -n "$before" ] && [ "$before" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$before" 2>/dev/null; then
+            range="$before..${{ github.sha }}"
+          else
+            range="${{ github.sha }}"
+          fi
+          python tools/check_private_data.py --commits "$range"

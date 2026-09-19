@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "simufact-weld-pipeline: headless weld bead meshing, input checks and Simufact Welding scripting"
+repository-code: "https://github.com/gArtll/simufact-weld-pipeline"
+type: software
+authors:
+  - alias: gArtll
+version: 0.1.0
+date-released: 2026-09-15
+license: MIT
+keywords:
+  - welding simulation
+  - Simufact Welding
+  - MARC
+  - weld bead mesh
+  - HyperMesh
+  - finite element

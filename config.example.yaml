@@ -1,0 +1,14 @@
+# Machine-specific settings. Copy to config.yaml (git-ignored) and fill in. Nothing machine-specific lives in the code.
+# hmbatch: HyperMesh batch executable (<HYPERMESH_ROOT>/hwdesktop/hm/bin/win64/hmbatch.exe).
+#          Empty = prep/mesh_bead.py (pure Python bead mesher, same algorithm as prep/mesh_bead.tcl).
+hmbatch: ""
+# runscript / arctool: needed by build, gate (without --self), run, compare
+runscript: "<SIMUFACT_ROOT>/simufact/welding/2024.2/bin/runscript.bat"
+arctool: "<SIMUFACT_ROOT>/simufact/welding/2024.2/sfTools/sfArcTool/bin/ArcToolCmd.exe"
+# Python used for prep / gate / compare (needs numpy, scipy, pyyaml). Empty = the interpreter running weldsim.py
+python: ""
+# Output root used when case.json output_dir is empty; relative paths are relative to the repository root
+work_root: runs
+# Solver parallelisation written into the process parameters
+solver_domains: 1
+solver_threads_per_domain: 8

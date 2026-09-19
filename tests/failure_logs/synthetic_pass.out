@@ -1,0 +1,11 @@
+# SYNTHETIC fixture written by make_synthetic.py -- not from any solver run. Same line formats as a
+# Simufact/MARC .out: error lines, one instance of each distinct warning text. Warning repeat counts:
+#     119 x      warning - Search order is fixed due to glue control.
+#        1 x      warning - Above post code is not supported in ARC.
+#
+
+
+*** warning - Search order is fixed due to glue control.
+*** warning - Above post code is not supported in ARC.
+
+             Number of warning messages is 120

@@ -1,0 +1,21 @@
+{
+  "_readme": "Blank case created by `weldsim.py new`. Nothing here comes from another case. Every value that depends on the part, the process or the machine is null until it is filled from this part's CAD, its process documents, the user, or a measurement on the machine, and each filled value gets an entry in `provenance`. preflight blocks while any used value has no source.",
+  "role": "project",
+  "case_name": null,
+  "output_dir": null,
+  "geometry": {"step": null, "units": "mm"},
+  "explicit_web": null,
+  "materials": {"base_xmt": null, "filler_xmt": null},
+  "heat_source": {"xml": null, "entity_name": null},
+  "temperature": null,
+  "gravity": null,
+  "bead": {"leg_mm": null, "section_spacing_mm": null},
+  "sides": [],
+  "process": {"parameters_xml": null, "weld_speed_mm_s": null},
+  "constraints": null,
+  "contact_ruleset": null,
+  "gate": {"end_time_s": null},
+  "run": {"end_time_s": null},
+  "solver": null,
+  "provenance": {}
+}

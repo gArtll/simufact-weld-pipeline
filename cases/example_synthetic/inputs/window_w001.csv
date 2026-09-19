@@ -1,0 +1,10 @@
+# example_synthetic window w001: defining points on the bead outer line
+# Length unit: Millimeter [mm]
+#
+# Orientation: global orientation;x-coordinate;y-coordinate;z-coordinate
+0;1;0;0
+#
+# order;activity;x-coordinate;y-coordinate;z-coordinate
+1;true;-5.700000;2.700000;10.000000
+2;true;-5.700000;2.700000;50.000000
+3;true;-5.700000;2.700000;90.000000

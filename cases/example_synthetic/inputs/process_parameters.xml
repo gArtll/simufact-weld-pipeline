@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC test fixture written by cases/synthetic_xml.py: not a Simufact export, values made up -->
+<process_parameters synthetic="true">
+    <process_definition_data>
+        <end_time dimension="9" unit="0" value="60.0"/>
+        <time_steps_method>0</time_steps_method>
+        <fixed_time_step_value dimension="9" unit="0" value="0.1"/>
+    </process_definition_data>
+    <step_size_controls>
+        <step_size_control loadcase_type="1" precision_mode_type="0" solver_solution_type="2">
+            <maximum_time_step dimension="9" unit="0" value="0.1" is_automatic="true"/>
+        </step_size_control>
+        <step_size_control loadcase_type="2" precision_mode_type="0" solver_solution_type="2">
+            <maximum_time_step dimension="9" unit="0" value="5.0" is_automatic="false"/>
+        </step_size_control>
+        <step_size_control loadcase_type="2" precision_mode_type="0" solver_solution_type="0">
+            <maximum_time_step dimension="9" unit="0" value="5.0" is_automatic="false"/>
+        </step_size_control>
+    </step_size_controls>
+</process_parameters>

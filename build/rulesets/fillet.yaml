@@ -1,0 +1,13 @@
+# Contact rule set for joint type "fillet" (fillet_web_on_plate), R22.
+# Bodies: torches (weld beads, one per side), web, plate.
+# Each rule: contact type, active flag, in_distance flag, direction, glue type, bias, stress-free projection,
+# electrical block (constant | coating).
+ruleset: fillet
+order: [torch_self, torch_component, torch_torch, component_self, component_component]
+rules:
+  torch_self:          {type: Self,               active: true,  in_distance: true,  direction: processDefault, glue: glued,          bias: "0",   stress_free_projection: "true",  electrical: constant}
+  torch_component:     {type: FilletComponent,    active: true,  in_distance: true,  direction: firstToSecond,  glue: glued,          bias: "0",   stress_free_projection: "true",  electrical: constant}
+  torch_torch:         {type: FilletFillet,       active: false, in_distance: false, direction: processDefault, glue: glued,          bias: "0",   stress_free_projection: "true",  electrical: constant}
+  component_self:      {type: Self,               active: false, in_distance: true,  direction: processDefault, glue: glued,          bias: "0.9", stress_free_projection: "false", electrical: constant}
+  # web -> plate one-way enabled, plate -> web present but inactive
+  component_component: {type: ComponentComponent, active_first_to_second: true, active_second_to_first: false, in_distance: true, direction: processDefault, glue: glueOnPeakTemp, bias: "0.9", stress_free_projection: "false", electrical: coating}

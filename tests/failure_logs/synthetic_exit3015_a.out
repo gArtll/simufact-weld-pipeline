@@ -1,0 +1,36 @@
+# SYNTHETIC fixture written by make_synthetic.py -- not from any solver run. Same line formats as a
+# Simufact/MARC .out: error lines, one instance of each distinct warning text. Warning repeat counts:
+#     634 x      warning - Ignore recycling due to separation.
+#        3 x      warning - Unable to reduce time step below minimum of    1.00000E-02 specified in input.
+#        3 x      warning - Search order is fixed due to glue control.
+#
+
+             *** error - element inside out at element       401 integration point     8
+             *** error - element inside out at element       402 integration point     5
+             *** error - element inside out at element       403 integration point     6
+             *** error - element inside out at element       404 integration point     3
+             *** error - element inside out at element      2210 integration point     7
+             *** error - element inside out at element      2211 integration point     1
+             *** error - element inside out at element      2212 integration point     6
+             *** error - element inside out at element      2213 integration point     8
+             *** error - element inside out at element      9870 integration point     5
+             *** error - element inside out at element      9871 integration point     8
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - element inside out at element      9870 integration point     3
+             *** error - unable to reduce time step below minimum of    1.00000E-02
+
+*** warning - Ignore recycling due to separation.
+*** warning - Unable to reduce time step below minimum of    1.00000E-02 specified in input.
+*** warning - Search order is fixed due to glue control.
+
+             Number of warning messages is 640

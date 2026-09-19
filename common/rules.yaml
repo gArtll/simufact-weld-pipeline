@@ -1,0 +1,61 @@
+# weldsim rule library. Machine-readable rule table; docs/rules.md is generated from this file (tools/gen_rules_doc.py).
+# stage: prep / build / gate / run / none      severity: block (stop) / warn (report only)
+# enforced_by: "<file relative to the repository root>:<function>" or "manual". tests/test_preflight.py verifies every function exists.
+# source: 内部算例 = rule found on an unpublished development model; Simufact 硬规则 / Tcl 硬规则 = project hard rules;
+#         E2 任务书 / F1 = tool development tasks. PF1-PF5 are preflight-only consistency checks.
+rules:
+  - {id: R1,  title: "Simufact 导入 bdf 只认大字段 GRID* + 固定字段 CHEXA", source: "内部算例", stage: prep, enforced_by: "common/bdf.py:check_r1", severity: block}
+  - {id: R2,  title: "两侧焊道按焊侧判断绕序，2x2x2 高斯点 detJ 非正为 0", source: "内部算例", stage: prep, enforced_by: "gate/check_detj.py:detj", severity: block}
+  - {id: R3,  title: "焊道与母材不要求共点，距离分布与界面焊道同型且 detJ 全正", source: "内部算例", stage: gate, enforced_by: "gate/check_bead_nodes.py:classify", severity: block}
+  - {id: R4,  title: "节点连接来自 XML connect_to_nodes=true，写 .dat 时生成", source: "内部算例", stage: build, enforced_by: "build/patch_trajectory.py:patch", severity: block}
+  - {id: R5,  title: "open_project 重存删掉 nodal_connection_result 两字段属正常", source: "内部算例", stage: none, enforced_by: manual, severity: warn}
+  - {id: R6,  title: "禁用 calculate_all_projections / 重复 calculate_all_orientations / delete_geometry / split_at", source: "内部算例（R6'）", stage: build, enforced_by: manual, severity: block}
+  - {id: R7,  title: "换焊道只 import_geometry，关 Simufact 后离线改 robots_properties.xml", source: "内部算例", stage: build, enforced_by: "build/patch_trajectory.py:patch", severity: block}
+  - {id: R8,  title: "焊缝线点必须落在焊接面上", source: "内部算例", stage: prep, enforced_by: "prep/wl_v2.py:main", severity: block}
+  - {id: R9,  title: "求解前移走复制来的 _Results_、_watch_tmp", source: "内部算例", stage: run, enforced_by: "weldsim.py:copy_project", severity: block}
+  - {id: R10, title: "固定时间步覆盖手动步长告警可忽略", source: "内部算例", stage: none, enforced_by: manual, severity: warn}
+  - {id: R11, title: ".dat 核对必须显式指定参照文件，块不同即失败", source: "内部算例", stage: gate, enforced_by: "weldsim.py:gate_dat", severity: block}
+  - {id: R12, title: "热源实体名、热源文件名与 XML 内电流电压数值一致", source: "E2 任务书", stage: build, enforced_by: "common/preflight.py:check_heat_source", severity: block}
+  - {id: R13, title: "焊缝线、焊道、母材同源、同一次 prep 运行", source: "内部算例", stage: build, enforced_by: "weldsim.py:step_build", severity: block}
+  - {id: R14, title: "导入外表面线（01_prep/wl_outer_*.csv）", source: "内部算例", stage: build, enforced_by: "weldsim.py:step_build", severity: block}
+  - {id: R15, title: "正式输入核对无允许差异；短跑 --allow AUTO_STEP", source: "内部算例", stage: run, enforced_by: "weldsim.py:step_run", severity: block}
+  - {id: R16, title: "热源实体名等于 case heat_source.entity_name", source: "内部算例", stage: build, enforced_by: "common/preflight.py:check_heat_source", severity: block}
+  - {id: R17, title: "外表面线 calculate_all_orientations 给 search_radius=5 mm", source: "内部算例", stage: build, enforced_by: "common/preflight.py:check_search_radius", severity: warn}
+  - {id: R18, title: "焊缝线 CSV 表头 0;1;0;0 导入后设 local-vector", source: "内部算例", stage: build, enforced_by: manual, severity: block}
+  - {id: R19, title: "窗口由定义点投影确定，长度差 < 0.01 mm", source: "内部算例", stage: prep, enforced_by: "prep/bead_outer_line.py:main", severity: block}
+  - {id: R20, title: "独立焊道输入核对 + 同截面峰值温差 < 5%", source: "内部算例", stage: gate, enforced_by: "weldsim.py:step_compare", severity: block}
+  - {id: R21, title: "截面等距、间距为参数；热源单步前进 <= 截面间距 x 0.5", source: "内部算例；前进量上限为 E2 任务书", stage: prep, enforced_by: "common/preflight.py:check_advance", severity: block}
+  - {id: R22, title: "接触表由接触模板生成，user_defined=true，不复制参照算例", source: "内部算例", stage: build, enforced_by: "build/contact_table_gen.py:generate", severity: block}
+  - {id: R23, title: "ORIENT 容差内一致（弧长 1e-5 m、方向分量 2e-3）", source: "内部算例", stage: gate, enforced_by: "weldsim.py:gate_dat", severity: block}
+  - {id: R24, title: "节点吸附：焊道接触面节点离母材节点 < 10 µm 时精确重合；近重合区间 10 µm–0.1 mm 计数进输入核对报告", source: "内部算例", stage: prep, enforced_by: "prep/weld_prep.py:main", severity: block}
+
+  - {id: S1,  title: "只对可丢弃副本跑脚本；目标工程不得已存在", source: "Simufact 硬规则 1", stage: build, enforced_by: "common/preflight.py:check_output", severity: block}
+  - {id: S2,  title: "存在 _Run_ 时工艺只读；工程不得被占用（project.lock）", source: "Simufact 硬规则 2", stage: build, enforced_by: "common/preflight.py:check_output", severity: block}
+  - {id: S3,  title: "脚本运行器不认中文路径（preflight 同时拒绝空格）", source: "Simufact 硬规则 3", stage: build, enforced_by: "common/preflight.py:check_paths", severity: block}
+  - {id: S4,  title: "不调用 Trajectory.split_at", source: "Simufact 硬规则 4", stage: build, enforced_by: manual, severity: block}
+  - {id: S5,  title: "副本里不在界面重新生成焊道、不开轨迹方向对话框", source: "Simufact 硬规则 5", stage: none, enforced_by: manual, severity: warn}
+  - {id: S6,  title: "成败看 .sts/.out 退出码（3004 正常）", source: "Simufact 硬规则 6", stage: run, enforced_by: "weldsim.py:read_sts_exit", severity: block}
+  - {id: S7,  title: "冷却段最大步长非自动且有上限（<= 25 s）", source: "Simufact 硬规则 7", stage: build, enforced_by: "common/preflight.py:check_process", severity: block}
+  - {id: S8,  title: "CSV 末行要有换行符", source: "Simufact 硬规则 8", stage: prep, enforced_by: "common/preflight.py:check_csv", severity: block}
+  - {id: S9,  title: "单位 mm：import_geometry(unit=mm)、import_points(length_unit=mm)", source: "Simufact 硬规则 9", stage: build, enforced_by: manual, severity: block}
+  - {id: S10, title: "每次改动后必须跑 .dat 核对", source: "Simufact 硬规则 10", stage: gate, enforced_by: "weldsim.py:gate_dat", severity: block}
+
+  - {id: TCL1, title: "先划细区域再划粗区域", source: "Tcl 硬规则 1", stage: prep, enforced_by: "hm/tcl_gen.py:check_tcl1", severity: block}
+  - {id: TCL2, title: "mark 只能用 1 和 2", source: "Tcl 硬规则 2", stage: prep, enforced_by: "hm/tcl_gen.py:check_tcl2", severity: block}
+  - {id: TCL3, title: "*readfile / *writefile 前加 hm_answernext yes", source: "Tcl 硬规则 3", stage: prep, enforced_by: "hm/tcl_gen.py:check_tcl3", severity: block}
+  - {id: TCL4, title: "*solid_split_by_tool 只用 tool_type=plane", source: "Tcl 硬规则 4", stage: prep, enforced_by: "hm/tcl_gen.py:check_tcl4", severity: block}
+
+  - {id: PF1, title: "case.json 列出的输入文件全部存在", source: "E2 任务书", stage: build, enforced_by: "common/preflight.py:check_inputs_exist", severity: block}
+  - {id: PF2, title: "材料 xmt、热源 xml、工艺 xml 可解析且根元素正确", source: "E2 任务书", stage: build, enforced_by: "common/preflight.py:check_parse", severity: block}
+  - {id: PF3, title: "焊接段为固定步长（time_steps_method=0，步长 > 0）", source: "E2 任务书", stage: build, enforced_by: "common/preflight.py:check_process", severity: block}
+  - {id: PF4, title: "母材板厚方向单元层数达到 case 阈值（默认 >= 3）", source: "E2 任务书；F1 改为 warn", stage: prep, enforced_by: "common/preflight.py:check_base_mesh", severity: warn}
+  - {id: PF5, title: "热源 XML 焊速等于 process.weld_speed_mm_s", source: "E2 任务书", stage: build, enforced_by: "common/preflight.py:check_speed_consistency", severity: warn}
+
+  - {id: PV0, title: "regression case: reproduces a finished study, never a template for a new case", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/provenance.py:check", severity: warn}
+  - {id: PV1, title: "every critical part / process / machine parameter in use has a provenance source", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/provenance.py:check", severity: block}
+  - {id: PV2, title: "borrowed_case parameters need the user's explicit approval (and stay listed)", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/provenance.py:check", severity: block}
+  - {id: PV3, title: "estimated parameters are listed for review", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/provenance.py:check", severity: warn}
+  - {id: PV4, title: "no input file may be a silent copy of a regression case input", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/provenance.py:check", severity: block}
+  - {id: CAP1, title: "a CAD-based case needs a capability plan without gaps", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/preflight.py:check_capability", severity: block}
+  - {id: CT1, title: "contact is the capability plan default, the regression baseline, or an explicit option with an official / user / process-document source", source: "new-model review 2026-09", stage: preflight, enforced_by: "common/contact.py:check", severity: block}
+  - {id: LC1, title: "a formal run needs inspect, plan, provenance and review done on the current case file", source: "new-model review 2026-09", stage: run, enforced_by: "common/lifecycle.py:run_blockers", severity: block}

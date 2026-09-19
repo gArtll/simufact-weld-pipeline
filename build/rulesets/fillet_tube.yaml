@@ -1,0 +1,8 @@
+# tube_on_plate fillet rule set. No user-defined override: the tube_on_plate mesh2 reference uses Simufact's process-default
+# contact generation for two components, one weld bead, one bearing and two clampings. The ordered body inventory
+# is checked by build_result.json and the resulting numeric CONTACT TABLE is checked against the reference .dat.
+ruleset: fillet_tube
+mode: process_default
+expected_bodies: [component_plate, component_tube, torch_bead, bearing, clamping_1, clamping_2]
+supported: "one exterior circumferential fillet bead; rigid bearing plus two stiffness clampings"
+unsupported: "multiple concentric tubes; partial-ring contact overrides; moving or released clamps"
