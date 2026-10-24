@@ -46,6 +46,29 @@ flowchart LR
 | **Solver statistics and post** | exit number, progress, inverted elements, retried increments from `.sts` / `.out`; probes by physical coordinate with thermal cycle, t8/5, cooling rate | `run/` |
 | **CI** | unit and integration tests, two synthetic example cases through `prep` and `gate --self`, input-check regression table, absolute-path and private-data scanners, on Windows and Ubuntu × Python 3.10 / 3.13 | `.github/workflows/ci.yml` |
 
+## Why the mesh looks like this
+
+Welding needs small cells at the seam and cannot afford them everywhere. The step from one size to the other is made
+with two explicit templates, so every element stays a quadrilateral (a hexahedron once swept) and every node is
+shared -- no hanging nodes, no triangles, no slivers at the weld.
+
+![transition templates](docs/images/transition_templates.png)
+
+Filling the same row automatically instead gives what an unstructured mesher leaves behind: irregular quadrilaterals,
+leftover triangles and a corner folded almost flat. Both rows below span the same region between the same boundary
+nodes; the numbers are this repository's own shape metric (`mesh_transition/quality.py`).
+
+![templates against an automatic fill](docs/images/transition_vs_unstructured.png)
+
+Grading is what the templates buy. The same weld region, with the same cell size along the seam, costs a quarter of
+the elements of a uniform mesh at that size -- and the factor carries into the solve once the face is swept through
+the thickness.
+
+![graded against uniform](docs/images/graded_vs_uniform.png)
+
+Figures: `python tools/make_mesh_figures.py` (needs matplotlib). Every mesh in them is built by the pipeline's own
+code and checked for hanging nodes before it is drawn.
+
 ## Support matrix
 
 | Joint | Status |
