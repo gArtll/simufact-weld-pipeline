@@ -63,6 +63,14 @@ input can be compared with another's. The numbers are this repository's own shap
 
 ![templates against an automatic mesh](docs/images/transition_vs_unstructured.png)
 
+On a real welded part the same thing shows up the same way. Below is 300 mm of a weld on a 6 mm web standing on a
+curved plate, meshed twice: once by HyperMesh's automesh with its default settings, once by this tool. Both are
+hexahedral and both have element shapes a solver is happy with -- the worst corner sine over the whole face is 0.505
+and 0.506. The automatic mesh reaches the far-field size wherever it gets there; the explicit one does it in rows
+that were decided before it ran.
+
+![a real part, meshed automatically and with explicit transitions](docs/images/real_part_automatic_vs_explicit.png)
+
 Grading is what the templates buy. The same weld region, with the same cell size along the seam, costs a quarter of
 the elements of a uniform mesh at that size -- and the factor carries into the solve once the face is swept through
 the thickness.
