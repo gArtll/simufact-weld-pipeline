@@ -54,11 +54,14 @@ shared -- no hanging nodes, no triangles, no slivers at the weld.
 
 ![transition templates](docs/images/transition_templates.png)
 
-Filling the same row automatically instead gives what an unstructured mesher leaves behind: irregular quadrilaterals,
-leftover triangles and a corner folded almost flat. Both rows below span the same region between the same boundary
-nodes; the numbers are this repository's own shape metric (`mesh_transition/quality.py`).
+An automatic mesher does this job well: on the same region, gmsh's quadrilateral mesher lands on the same element
+count and much the same element shapes. What it cannot give is structure. On the left the rows are known before the
+mesh is built, every vertical line lines up, a node can be demanded at a given position -- which is how constraints
+and weld-root nodes are placed by coordinate -- and the same input always gives the same mesh, so one run's solver
+input can be compared with another's. The numbers are this repository's own shape metric
+(`mesh_transition/quality.py`).
 
-![templates against an automatic fill](docs/images/transition_vs_unstructured.png)
+![templates against an automatic mesh](docs/images/transition_vs_unstructured.png)
 
 Grading is what the templates buy. The same weld region, with the same cell size along the seam, costs a quarter of
 the elements of a uniform mesh at that size -- and the factor carries into the solve once the face is swept through
@@ -66,8 +69,8 @@ the thickness.
 
 ![graded against uniform](docs/images/graded_vs_uniform.png)
 
-Figures: `python tools/make_mesh_figures.py` (needs matplotlib). Every mesh in them is built by the pipeline's own
-code and checked for hanging nodes before it is drawn.
+Figures: `python tools/make_mesh_figures.py` (needs matplotlib and gmsh, which the pipeline itself does not).
+Every template mesh in them is built by the pipeline's own code and checked for hanging nodes before it is drawn.
 
 ## Support matrix
 

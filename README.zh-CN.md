@@ -51,18 +51,20 @@ flowchart LR
 
 ![过渡模板](docs/images/transition_templates.png)
 
-同一行改由自动划分填充，得到的就是非结构网格的典型结果：不规则四边形、剩下的三角形，以及一个几乎压平的角。下面两行
-覆盖同一区域、用同一批边界节点；数值取自本仓库自己的形状度量（`mesh_transition/quality.py`）。
+自动划分器做这件事其实做得不错：同一区域下，gmsh 的四边形划分给出的单元数和单元形状与模板版相当。它给不了的是
+**结构**。左边的行数在划分之前就已知，竖线全部对齐，可以要求某个坐标处必须有节点（约束点和焊根节点就是这样按坐标
+落位的），而且同样的输入永远得到同样的网格——这才使得两次运行的求解输入可以互相对照。数值取自本仓库自己的形状度量
+（`mesh_transition/quality.py`）。
 
-![模板与自动填充对比](docs/images/transition_vs_unstructured.png)
+![模板与自动划分对比](docs/images/transition_vs_unstructured.png)
 
 过渡模板换来的是分级。同一焊接区域、焊缝处同样的单元尺寸，分级后的单元数只有全局细网格的四分之一——面扫掠成体之后，
 这个倍数直接体现在求解上。
 
 ![分级与全局细网格对比](docs/images/graded_vs_uniform.png)
 
-出图：`python tools/make_mesh_figures.py`（需要 matplotlib）。图里每个网格都由流水线自身的代码生成，绘制前先检查过
-悬挂节点。
+出图：`python tools/make_mesh_figures.py`（需要 matplotlib 和 gmsh，流水线本身不需要）。图里模板网格全部由流水线
+自身的代码生成，绘制前先检查过悬挂节点。
 
 ## 支持矩阵
 
