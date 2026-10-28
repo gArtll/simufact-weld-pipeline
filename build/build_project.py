@@ -127,6 +127,10 @@ def main():
             tooling.append(item["name"])
         log("tooling_count", len(tooling))
         log("tooling", tooling)
+    if P.get("watermark"):
+        # label under the part (build/watermark.py): a bearing with no material or temperature that nothing touches
+        proc.new_bearing(name=P["watermark"]["name"], geometry=geom(proj, P["watermark"]["stl"], "mm"))
+        log("watermark", P["watermark"]["name"])
     log("fixed_node_counts", counts)
     if constraints.get("mode") == "fixed_nodes" and not all(v == 1 for v in counts.values()):
         raise RuntimeError("fixed node sets not exactly 1 node: %s" % counts)

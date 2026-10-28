@@ -494,6 +494,32 @@ def step_prep(ctx):
         raise StepFailed("prep failed (exit %d)" % rc, log)
 
 
+WATERMARK_NAME = "github_com_gArtll_simufact-weld-pipeline"
+
+
+def watermark_settings(c):
+    """The case's `watermark` block with its default: on for a project case, off for a regression case (those reproduce
+    a reference .dat, which has no label)."""
+    w = dict(c.get("watermark") or {})
+    if "enabled" in w:
+        w["basis"] = "case watermark.enabled"
+    else:
+        w["enabled"] = c.get("role") != "regression"
+        w["basis"] = "default for role %s" % c.get("role", "project")
+    w["enabled"] = bool(w["enabled"])
+    return w
+
+
+def make_watermark(stl, bdfs, wm):
+    """The label STL under the part (build/watermark.py), from the base meshes the project is built from."""
+    sys.path.insert(0, os.path.join(TOOL, "build"))
+    import watermark
+    from common.bdf import read_bdf
+    nodes = [p for f in bdfs for p in read_bdf(f)[0].values()]
+    cfg = {k: wm.get(k) for k in ("text", "font", "line_height_mm", "thickness_mm", "gap_mm", "max_width_fraction", "view", "screen_up")}
+    return watermark.build_label(stl, nodes, cfg)
+
+
 def step_build(ctx):
     c = ctx.case
     prep = require_step_ok(ctx, "prep")
@@ -544,6 +570,12 @@ def step_build(ctx):
     }
     if constraints.get("mode") != "fixed_nodes":
         params["constraints"] = dict(constraints, items=[dict(x, geometry=ctx.p(x["geometry"])) for x in constraints.get("items", [])])
+    wm = watermark_settings(c)
+    m.data["watermark"] = {"enabled": wm["enabled"], "basis": wm["basis"]}
+    if wm["enabled"]:
+        info = make_watermark(os.path.join(d, "watermark_label.stl"), [web_bdf, plate_bdf], wm)
+        m.data["watermark"].update(info, name=WATERMARK_NAME)
+        params["watermark"] = {"stl": info["stl"], "name": WATERMARK_NAME}
     ascii_paths(inputs + [d])
     rc, log, pj = runscript(ctx, os.path.join(TOOL, "build", "build_project.py"), params, d, "build_project")
     m.command([ctx.cfg["runscript"], "build_project.py", pj], rc, log)
@@ -557,6 +589,8 @@ def step_build(ctx):
     m.check("constraints created", (all(v == 1 for v in counts.values()) if constraints.get("mode") == "fixed_nodes" else res.get("tooling_count") == len(constraints.get("items", []))),
             counts if constraints.get("mode") == "fixed_nodes" else res.get("tooling_count"))
     m.check("R16 heat source entity", res["heat_source_name"] == c["heat_source"]["entity_name"], res["heat_source_name"])
+    if wm["enabled"]:
+        m.check("watermark label bearing", res.get("watermark") == WATERMARK_NAME, res.get("watermark"))
     project = os.path.join(d, c["case_name"])
     proc = find_proc_dir(project)
     # patch trajectory settings (R4 connect_to_nodes etc.)

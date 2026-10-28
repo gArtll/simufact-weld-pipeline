@@ -48,6 +48,10 @@
 | `fixed_nodes_csv` | path | 条件 | 旧格式；`constraints.mode=fixed_nodes` 时使用，每组必须恰好命中 1 个节点 |
 | `constraints` | obj | 否 | `mode=fixed_nodes` 或 `rigid_tooling`；后者的 `items[]` 参数化 bearing/clamping、geometry、unit、刚度 |
 | `contact_ruleset` | str | 是 | `build/rulesets/<名>.yaml`。回归 case：当年求解所用模板，固定不改（`fillet` / `fillet_tube`）。项目 case：plan 给出的能力默认值（T 接头 `process_default`），或该能力 `contact.explicit` 列出的替代方案（如 `fillet`，焊道优先单向接触），替代方案的 provenance 必须是 `simufact_official_example` / `user_confirmed` / `process_document`，否则 CT1 阻断；不许为了算通而切换 |
+| `watermark.enabled` | bool | 否 | build 在零件下方放一块写着仓库网址和"自动生成 未经人工核对"的标牌（`build/watermark.py`），作为无材料、无温度、不接触任何物体的 bearing 进工程，正对 Simufact 主视图（home）的相机，模型视图和结果视图的截图里都看得到。默认：项目 case 开，回归 case 关（参照 .dat 里没有它）。核对过结果的人自己关掉 |
+| `watermark.text` / `.font` | [str] / path | 否 | 换成别的文字（需要 Pillow 和含中文的字体）；不给则用烘焙好的默认点阵，不依赖字体 |
+| `watermark.view` / `.screen_up` | [3] | 否 | 朝向相机的方向和屏幕向上的方向，全局坐标；默认 `[0,-1,0]` / `[0,0,1]`，即 Simufact 主视图 |
+| `watermark.gap_mm` / `.line_height_mm` / `.thickness_mm` / `.max_width_fraction` | num | 否 | 屏幕上离零件的间隙（默认 30，要大于焊接变形）、单行字高（默认 14；超过零件在屏幕上尺寸的 0.8 倍时自动缩小）、字的凸起高度（默认 0：只有字面，面片最少，Simufact 画出的边线最少） |
 | `solver.domains` / `.threads_per_domain` | int | 否 | case 级并行覆盖；未给则取 `config.yaml` |
 | `gate.end_time_s` | num | 是 | 门禁写 .dat 的结束时间（与参照相同，例如 280） |
 | `gate.independent_bead` | bool | 否 | 门禁带 `--independent-bead`（R20） |
